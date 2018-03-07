@@ -1,0 +1,118 @@
+﻿@{
+    Layout = "~/styles/_Layout.cshtml";
+    Page.Title = "My Scripture Journal | Edit Journal";
+
+    var book = "";
+    var chapter = 0;
+    var verse = 0;
+    var verseText = "";
+    var note = "";
+    var journalId = "";
+
+    if (!IsPost)
+    {
+        if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
+        {
+            journalId = Request.QueryString["ID"];
+            var db = Database.Open("MyScriptureJournal");
+            var dbCommand = "SELECT * FROM Journal WHERE ID = @0";
+            var row = db.QuerySingle(dbCommand, journalId);
+
+            if (row != null)
+            {
+                book = row.Book;
+                chapter = row.Chapter;
+                verse = row.Verse;
+                verseText = row.VerseText;
+                note = row.Note;
+            }
+            else
+            {
+                Validation.AddFormError("No journal was found for that ID.");
+            }
+        }
+        else
+        {
+            Validation.AddFormError("No journal was selected.");
+        }
+    }
+
+    if (IsPost)
+    {
+        Validation.RequireField("book", "You must enter a book");
+        Validation.RequireField("chapter", "chapter is required");
+        Validation.RequireField("verse", "verse is required");
+        Validation.RequireField("verseText", "The verse text is required");
+        Validation.RequireField("note", "A note is required");
+        Validation.RequireField("journalId", "No journal ID was submitted!");
+
+        book = Request.Form["book"];
+        chapter = Request.Form["chapter"].AsInt();
+        verse = Request.Form["verse"].AsInt();
+        verseText = Request.Form["verseText"];
+        note = Request.Form["note"];
+        journalId = Request.Form["journalId"];
+
+        if (Validation.IsValid())
+        {
+            var db = Database.Open("MyScriptureJournal");
+            var updateCommand = "UPDATE Journal SET Book=@0, Chapter=@1, Verse=@2, VerseText=@3, Note=@4 WHERE Id=@5";
+            db.Execute(updateCommand, book, chapter, verse, verseText, note, journalId);
+            Response.Redirect("~/Default");
+        }
+    }
+}
+    <article class="row" id="add-journal">
+        <section class="col-md-12">
+            <h3 class="headline">Edit Journal # @journalId</h3>
+            <hr>
+            @Html.ValidationSummary()
+
+            <form method="post" class="col-md-5 offset-md-0">
+                <fieldset>
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="book">Book:</label>
+                            <input type="text" class="form-control" id="book" name="book" value="@book" placeholder="Book">
+                            @Html.ValidationMessage("book")
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="chapter">Chapter:</label>
+                            <input type="number" class="form-control" id="chapter" name="chapter" value="@chapter" placeholder="Chapter">
+                            @Html.ValidationMessage("chapter")
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="verse">Verse:</label>
+                            <input type="number" class="form-control" id="verse" name="verse" value="@verse" placeholder="Verse">
+                            @Html.ValidationMessage("verse")
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="verseText">Verse Text:</label>
+                            <textarea class="form-control" id="verseText" name="verseText" rows="3">@verseText</textarea>
+                            @Html.ValidationMessage("verseText")
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="note">Note:</label>
+                            <textarea class="form-control" id="note" name="note" rows="3">@note</textarea>
+                            @Html.ValidationMessage("note")
+                        </span>
+                    </section>
+
+                    <input type="hidden" name="journalid" value="@journalId">
+                    <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
+                </fieldset>
+            </form>
+        </section>
+    </article>

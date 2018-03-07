@@ -1,0 +1,86 @@
+﻿@{
+    Layout = "~/_Layout.cshtml";
+    Page.Title = "MegaDesk | Add Quote";
+
+    Validation.RequireField("customerName", "Customer name is required");
+    Validation.RequireField("deskWidth", "Desk width is required");
+    Validation.RequireField("deskDepth", "Desk depth is required");
+    Validation.RequireField("deskNumOfDrawers", "Number of desk drawers is required");
+    Validation.RequireField("deskMaterial", "Desk material is required");
+
+    var customerName = "";
+    var deskWidth = 0;
+    var deskDepth = 0;
+    var deskNumOfDrawers = 0;
+    var deskMaterial = "";
+    var rushDays = 0;
+    var dateAdded = DateTime.Now.ToString();
+    var quoteAmount = 0;
+
+    if (IsPost && Validation.IsValid())
+    {
+        customerName = Request.Form["customerName"];
+        deskWidth = Request.Form["deskWidth"].AsInt();
+        deskNumOfDrawers = Request.Form["deskNumOfDrawers"].AsInt();
+        deskMaterial = Request.Form["deskMaterial"];
+        rushDays = Request.Form["rushDays"].AsInt();
+
+        var db = Database.Open("MegaDeskWebApp");
+        var insertCommand = "INSERT INTO Orders (customerName, width, depth, numOfDrawers, material, rushOrder, quoteDate, quoteAmount) Values(@0, @1, @2, @3, @4, @5, @6)";
+        db.Execute(insertCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterial, rushDays, dateAdded, quoteAmount);
+        Response.Redirect("~/Default");
+    }
+}
+    <article class="row" id="add-journal">
+        <section class="col-md-12">
+            <h3 class="headline">Add a Journal</h3>
+            <hr>
+            @Html.ValidationSummary()
+
+            <form method="post" class="col-md-5 offset-md-0">
+                <fieldset>
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="book">Book:</label>
+                            <input type="text" class="form-control" id="book" name="book" value="@Request.Form["book"]" placeholder="Book">
+                            @Html.ValidationMessage("book")
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="chapter">Chapter:</label>
+                            <input type="number" class="form-control" id="chapter" name="chapter" value="@Request.Form["chapter"]" placeholder="Chapter">
+                            @Html.ValidationMessage("chapter")
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="verse">Verse:</label>
+                            <input type="number" class="form-control" id="verse" name="verse" value="@Request.Form["verse"]" placeholder="Verse">
+                            @Html.ValidationMessage("verse")
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="verseText">Verse Text:</label>
+                            <textarea class="form-control" id="verseText" name="verseText" rows="3">@Request.Form["verseText"]</textarea>
+                            @Html.ValidationMessage("verseText")
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="note">Note:</label>
+                            <textarea class="form-control" id="note" name="note" rows="3">@Request.Form["note"]</textarea>
+                            @Html.ValidationMessage("note")
+                        </span>
+                    </section>
+
+                    <p><input type="submit" name="buttonSubmit" value="Add Journal"></p>
+                </fieldset>
+            </form>
+        </section>
+    </article>

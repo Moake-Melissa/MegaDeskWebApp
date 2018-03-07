@@ -1,0 +1,87 @@
+﻿@{
+    Layout = "~/styles/_Layout.cshtml";
+    Page.Title = "MyScriptureJournal | Delete Journal";
+
+    var scripture = "";
+    var verseText = "";
+    var note = "";
+    var dateAdded = "";
+    var journalId = "";
+
+    if (!IsPost)
+    {
+        if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
+        {
+            journalId = Request.QueryString["ID"];
+            var db = Database.Open("MyScriptureJournal");
+            var dbCommand = "SELECT * FROM Journal WHERE ID = @0";
+            var row = db.QuerySingle(dbCommand, journalId);
+            if (row != null)
+            {
+                scripture = row.Book + " " + row.Chapter + ":" + row.Verse;
+                verseText = row.VerseText;
+                note = row.Note;
+                dateAdded = row.DateAdded.ToString();
+            }
+            else
+            {
+                Validation.AddFormError("No journal was found for that ID.");
+            }
+        }
+        else
+        {
+            Validation.AddFormError("No journal was found for that ID.");
+        }
+    }
+    if (IsPost && !Request["buttonDelete"].IsEmpty())
+    {
+        journalId = Request.Form["journalId"];
+        var db = Database.Open("MyScriptureJournal");
+        var deleteCommand = "DELETE FROM Journal WHERE ID = @0";
+        db.Execute(deleteCommand, journalId);
+        Response.Redirect("~/Default");
+    }
+}
+    <article class="row" id="delete-journal">
+        <section class="col-md-12">
+            <h3 class="headline">Delete Journal # @journalId</h3>
+            <hr>
+            @Html.ValidationSummary()
+
+            <form method="post" class="col-md-5 offset-md-0">
+                <fieldset>
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="scripture">Scripture:</label>
+                            <input type="text" class="form-control" id="scripture" name="scripture" value="@scripture" readonly>
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="verseText">Verse Text:</label>
+                            <textarea class="form-control" id="verseText" name="verseText" rows="3" readonly>@verseText</textarea>
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="journalNote">Note:</label>
+                            <textarea class="form-control" id="note" name="note" rows="3" readonly>@note</textarea>
+                        </span>
+                    </section>
+
+                    <section class="form-group">
+                        <span class="has-float-label">
+                            <label for="dateAdded">Date Added:</label>
+                            <input type="text" class="form-control" id="dateAdded" name="dateAdded" value="@dateAdded" readonly>
+                        </span>
+                    </section>
+
+                    <input type="hidden" name="journalid" value="@journalId">
+                    <p><input type="submit" name="buttonDelete" value="Delete Journal" /></p>
+                </fieldset>
+            </form>
+        </section>
+    </article>
+
