@@ -1,118 +1,159 @@
 ﻿@{
-    Layout = "~/styles/_Layout.cshtml";
-    Page.Title = "My Scripture Journal | Edit Journal";
+    /**/
 
-    var book = "";
-    var chapter = 0;
-    var verse = 0;
-    var verseText = "";
-    var note = "";
-    var journalId = "";
+    Layout = "~/_Layout.cshtml";
+    Page.Title = "MegaDesk | Edit Quote";
+
+    var customerName = "";
+    var deskWidth = 0;
+    var deskDepth = 0;
+    var deskNumOfDrawers = 0;
+    var deskMaterial = "";
+    var rushDays = 0;
+    var dateAdded = DateTime.Now.ToString();
+    var quoteAmount = 0;
+    var quoteId = "";
+
 
     if (!IsPost)
     {
         if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
         {
-            journalId = Request.QueryString["ID"];
-            var db = Database.Open("MyScriptureJournal");
-            var dbCommand = "SELECT * FROM Journal WHERE ID = @0";
-            var row = db.QuerySingle(dbCommand, journalId);
+            quoteId = Request.QueryString["ID"];
+            var db = Database.Open("MegaDeskWebApp");
+            var dbCommand = "SELECT * FROM Orders WHERE ID = @0";
+            var row = db.QuerySingle(dbCommand, quoteId);
 
             if (row != null)
             {
-                book = row.Book;
-                chapter = row.Chapter;
-                verse = row.Verse;
-                verseText = row.VerseText;
-                note = row.Note;
+                customerName = row.customerName;
+                deskWidth = row.width;
+                deskDepth = row.depth;
+                deskNumOfDrawers = row.numOfDrawers;
+                deskMaterial = row.typeOfMaterial;
+                rushDays = row.rushOrder;
+                dateAdded = row.quoteDate;
+                quoteAmount = row.quoteAmount;
             }
             else
             {
-                Validation.AddFormError("No journal was found for that ID.");
+                Validation.AddFormError("No quote was found for that ID.");
             }
         }
         else
         {
-            Validation.AddFormError("No journal was selected.");
+            Validation.AddFormError("No quote was selected.");
         }
     }
 
     if (IsPost)
     {
-        Validation.RequireField("book", "You must enter a book");
-        Validation.RequireField("chapter", "chapter is required");
-        Validation.RequireField("verse", "verse is required");
-        Validation.RequireField("verseText", "The verse text is required");
-        Validation.RequireField("note", "A note is required");
-        Validation.RequireField("journalId", "No journal ID was submitted!");
+        Validation.RequireField("customerName", "Customer name is required");
+        Validation.RequireField("deskWidth", "Desk width is required");
+        Validation.RequireField("deskDepth", "Desk depth is required");
+        Validation.RequireField("deskNumOfDrawers", "Number of desk drawers is required");
+        Validation.RequireField("deskMaterial", "Desk material is required");
+        Validation.Add("deskWidth", Validator.Range(24, 96, "Width must be between 24 and 96 inches."));
+        Validation.Add("deskDepth", Validator.Range(12, 48, "Depth must be between 12 and 48 inches."));
+        Validation.Add("deskNumOfDrawers", Validator.Range(1, 7, "Number of drawers must be between 1 and 7."));
 
-        book = Request.Form["book"];
-        chapter = Request.Form["chapter"].AsInt();
-        verse = Request.Form["verse"].AsInt();
-        verseText = Request.Form["verseText"];
-        note = Request.Form["note"];
-        journalId = Request.Form["journalId"];
+        customerName = Request.Form["customerName"];
+        deskWidth = Request.Form["deskWidth"].AsInt();
+        deskDepth = Request.Form["deskDepth"].AsInt();
+        deskNumOfDrawers = Request.Form["deskNumOfDrawers"].AsInt();
+        deskMaterial = Request.Form["deskMaterial"];
+        rushDays = Request.Form["rushDays"].AsInt();
+        quoteAmount = Request.Form["quoteAmount"].AsInt();
+        quoteId = Request.Form["quoteId"];
 
         if (Validation.IsValid())
         {
-            var db = Database.Open("MyScriptureJournal");
-            var updateCommand = "UPDATE Journal SET Book=@0, Chapter=@1, Verse=@2, VerseText=@3, Note=@4 WHERE Id=@5";
-            db.Execute(updateCommand, book, chapter, verse, verseText, note, journalId);
-            Response.Redirect("~/Default");
+            var db = Database.Open("MegaDeskWebApp");
+            var updateCommand = "UPDATE Orders SET customerName=@0, deskWidth=@1, deskDepth=@2, deskNumOfDrawers=@3, typeOfMaterial=@4, rushOrder=@5, quoteAmount=@6 WHERE Id=@7";
+            db.Execute(updateCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterial, rushDays, quoteAmount, quoteId);
+            Response.Redirect("~/Home");
         }
     }
 }
-    <article class="row" id="add-journal">
-        <section class="col-md-12">
-            <h3 class="headline">Edit Journal # @journalId</h3>
-            <hr>
-            @Html.ValidationSummary()
+<article class="row" id="add-quote-page">
+    <section class="single-quote">
+        <h3 class="headline">Edit Quote # @quoteId</h3>
+        <hr>
+        @Html.ValidationSummary()
 
-            <form method="post" class="col-md-5 offset-md-0">
-                <fieldset>
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="book">Book:</label>
-                            <input type="text" class="form-control" id="book" name="book" value="@book" placeholder="Book">
-                            @Html.ValidationMessage("book")
-                        </span>
-                    </section>
+        <form method="post" class="quote-form">
+            <fieldset>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="customerName">Customer Name:</label>
+                        <input type="text" class="form-control" id="customerName" name="customerName" value="@Request.Form["customerName"]" placeholder="Customer Name">
+                        @Html.ValidationMessage("customerName")
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="chapter">Chapter:</label>
-                            <input type="number" class="form-control" id="chapter" name="chapter" value="@chapter" placeholder="Chapter">
-                            @Html.ValidationMessage("chapter")
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskWidth">Desk Width:</label>
+                        <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@Request.Form["deskWidth"]" placeholder="Width (24 - 96 inches)">
+                        @Html.ValidationMessage("deskWidth")
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="verse">Verse:</label>
-                            <input type="number" class="form-control" id="verse" name="verse" value="@verse" placeholder="Verse">
-                            @Html.ValidationMessage("verse")
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskDepth">Desk Depth:</label>
+                        <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@Request.Form["deskDepth"]" placeholder="Depth (12 - 48 inches)">
+                        @Html.ValidationMessage("deskDepth")
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="verseText">Verse Text:</label>
-                            <textarea class="form-control" id="verseText" name="verseText" rows="3">@verseText</textarea>
-                            @Html.ValidationMessage("verseText")
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskNumOfDrawers">Number of Desk Drawers:</label>
+                        <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@Request.Form["verseText"]" placeholder="Drawers (1-7)">
+                        @Html.ValidationMessage("deskNumOfDrawers")
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="note">Note:</label>
-                            <textarea class="form-control" id="note" name="note" rows="3">@note</textarea>
-                            @Html.ValidationMessage("note")
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskMaterial">Desk Material:</label>
+                        <!-- Use value="@Request.Form["deskMaterial"]" to set which one is selected -->
+                        <select class="form-control" id="deskMaterial" name="deskMaterial">
+                            <option value="Pine">Pine</option>
+                            <option value="Laminate">Laminate</option>
+                            <option value="Veneer">Veneer</option>
+                            <option value="Oak">Oak</option>
+                            <option value="Rosewood">Rosewood</option>
+                        </select>
+                        @Html.ValidationMessage("deskMaterial")
+                    </span>
+                </section>
 
-                    <input type="hidden" name="journalid" value="@journalId">
-                    <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
-                </fieldset>
-            </form>
-        </section>
-    </article>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="rushDays">Rush Options:</label>
+                        <!-- use "@Request.Form["rushDays"]" to set which one is selected -->
+                        <select class="form-control" id="rushDays" name="rushDays">
+                            <option selected value="0">None</option>
+                            <option value="3">3 Days</option>
+                            <option value="5">5 Days</option>
+                            <option value="7">7 Days</option>
+                        </select>
+                        @Html.ValidationMessage("rushDays")
+                    </span>
+                </section>
+
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="totalAmount">Quote Amount:</label>
+                        <output name="quoteAmount"></output>
+                    </span>
+                </section>
+
+                <input type="hidden" name="journalid" value="@quoteId">
+                <p><input type="submit" name="buttonSubmit" value="Update Quote"></p>
+            </fieldset>
+        </form>
+    </section>
+</article>
