@@ -4,6 +4,21 @@ body {
     margin:0;
 }
 
+a:link, a:visited {
+    color: saddlebrown;
+}
+
+a.active {
+    color:saddlebrown;
+    text-decoration: underline;
+    cursor: default;
+}
+
+a:hover {
+    color:chocolate;
+    text-decoration: underline;
+}
+
 #container {
     width: 80%;
     margin: 0 auto;
@@ -87,4 +102,31 @@ footer{
     left:0;
     right: 0;
     text-align:center;
+}
+
+
+/*table styles*/
+.head {
+    background-color: darkgray;
+    font-weight: bold;
+    color: #FFF;
+}
+
+.grid {
+    border-collapse: collapse;
+    width: 74%;
+}
+
+    .grid th, .grid td {
+        border: 1px solid #C0C0C0;
+        padding: 5px;
+    }
+
+    .grid th {
+        color: saddlebrown;
+    }
+
+.alt {
+    background-color: darkgray;
+    color: white;
 }
