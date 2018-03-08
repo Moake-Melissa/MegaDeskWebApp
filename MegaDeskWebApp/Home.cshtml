@@ -1,3 +1,22 @@
-﻿<p>
-    <a href="~/ViewAllQuotes.cshtml">View All Quotes</a>
-</p>
+﻿@{
+    Page.Title = "MegaDesk";
+    Layout = "~/_Layout.cshtml";
+}
+
+<section class="options">
+    <div class="inner">
+        <div>
+            <a href="~/ViewAllQuotes.cshtml">View All Quotes</a>
+        </div>
+        <div>
+            <a href="~/AddQuotes.cshtml">Add A Quotes</a>
+        </div>
+        <div>
+            <a href="~/SearchQuotes.cshtml">Search Quotes</a>
+        </div>
+    </div>
+</section>
+
+<section class="image">
+    <img src="~/Images/desk.png" alt="desk image" />
+</section>

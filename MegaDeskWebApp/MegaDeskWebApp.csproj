@@ -96,6 +96,8 @@
     <Content Include="EditQuote.cshtml" />
     <Content Include="DeleteQuote.cshtml" />
     <None Include="packages.config" />
+    <Content Include="Images\desk.png" />
+    <Content Include="Images\woodBackground.jpeg" />
     <Content Include="ViewAllQuotes.cshtml" />
     <Content Include="ViewQuote.cshtml" />
     <None Include="Web.Debug.config">
