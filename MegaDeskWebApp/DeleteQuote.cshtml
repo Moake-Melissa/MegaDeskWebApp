@@ -53,7 +53,7 @@
 }
 <article class="row" id="delete-journal">
     <section class="single-quote">
-        <h3 class="headline">Delete Quote # @quoteId</h3>
+        <h2 class="headline">Delete Quote # @quoteId</h2>
         <hr>
         @Html.ValidationSummary()
 
@@ -83,7 +83,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskNumOfDrawers">Number of Desk Drawers:</label>
-                        <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@verseText" readonly>
+                        <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@deskNumOfDrawers" readonly>
                     </span>
                 </section>
 
@@ -114,6 +114,9 @@
                         <input type="text" class="form-control" id="dateAddded" name="dateAdded" value="@dateAdded" readonly>
                     </span>
                 </section>
+
+                <input type="hidden" id="quoteId" name="quoteId" value="@quoteId">
+                <p><input type="submit" name="buttonDelete" value="Delete Quote" /></p>
             </fieldset>
         </form>
     </section>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MegaDesk2_MelissaMoakeChrisBrown
+namespace MegaDeskWebApp_MelissaMoakeChrisBrown
 {
     public enum MaterialType
     {
@@ -15,7 +15,7 @@ namespace MegaDesk2_MelissaMoakeChrisBrown
         Veneer = 125
     };
   
-    class Desk
+    public class Desk
     {
         public decimal Width;
         public decimal Depth;
