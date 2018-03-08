@@ -94,6 +94,7 @@
     <Content Include="Home.cshtml" />
     <Content Include="AddQuote.cshtml" />
     <Content Include="EditQuote.cshtml" />
+    <Content Include="DeleteQuote.cshtml" />
     <None Include="packages.config" />
     <Content Include="ViewAllQuotes.cshtml" />
     <Content Include="ViewQuote.cshtml" />

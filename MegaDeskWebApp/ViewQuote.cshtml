@@ -1,79 +1,113 @@
 ﻿@{
-    Layout = "~/styles/_Layout.cshtml";
-    Page.Title = "My Scripture Journal | View Journal";
+    Layout = "~/_Layout.cshtml";
+    Page.Title = "MegaDesk | View Quote";
 
-    var scripture = "";
-    var verseText = "";
-    var note = "";
-    var dateAdded = "";
-    var journalId = "";
+    var customerName = "";
+    var deskWidth = 0;
+    var deskDepth = 0;
+    var deskNumOfDrawers = 0;
+    var deskMaterial = "";
+    var rushDays = 0;
+    var dateAdded = DateTime.Now.ToString();
+    var quoteAmount = 0;
+    var quoteId = "";
 
     if (!IsPost)
     {
         if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
         {
-            journalId = Request.QueryString["ID"];
-            var db = Database.Open("MyScriptureJournal");
-            var dbCommand = "SELECT * FROM Journal WHERE ID = @0";
-            var row = db.QuerySingle(dbCommand, journalId);
+            quoteId = Request.QueryString["ID"];
+            var db = Database.Open("MegaDeskWebApp");
+            var dbCommand = "SELECT * FROM Orders WHERE ID = @0";
+            var row = db.QuerySingle(dbCommand, quoteId);
 
             if (row != null)
             {
-                scripture = row.Book + " " + row.Chapter + ":" + row.Verse;
-                verseText = row.VerseText;
-                note = row.Note;
-                dateAdded = row.DateAdded.ToString();
+                customerName = row.customerName;
+                deskWidth = row.width;
+                deskDepth = row.depth;
+                deskNumOfDrawers = row.numOfDrawers;
+                deskMaterial = row.typeOfMaterial;
+                rushDays = row.rushOrder;
+                quoteAmount = row.quoteAmount;
+                dateAdded = row.quoteDate.ToString();
             }
             else
             {
-                Validation.AddFormError("No journal was found for that ID.");
+                Validation.AddFormError("No quote was found for that ID.");
             }
         }
         else
         {
-            Validation.AddFormError("No journal was selected.");
+            Validation.AddFormError("No quote was selected.");
         }
     }
 
 }
-    <article class="row" id="view-journal">
-        <section class="col-md-12">
-            <h3 class="headline">View Journal # @journalId</h3>
-            <hr>
-            @Html.ValidationSummary()
+<article class="row" id="view-quote-page">
+    <section class="single-quote">
+        <h3 class="headline">View Quote # @quoteId</h3>
+        <hr>
+        @Html.ValidationSummary()
 
-            <form method="post" class="col-md-5 offset-md-0">
-                <fieldset>
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="scripture">Scripture:</label>
-                            <input type="text" class="form-control" id="scripture" name="scripture" value="@scripture" readonly>
-                        </span>
-                    </section>
+        <form method="get" class="quote-form">
+            <fieldset>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="customerName">Customer Name:</label>
+                        <input type="text" class="form-control" id="customerName" name="customerName" value="@customerName" readonly>
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="verseText">Verse Text:</label>
-                            <textarea class="form-control" id="verseText" name="verseText" rows="3" readonly>@verseText</textarea>
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskWidth">Desk Width:</label>
+                        <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@deskWidth" readonly>
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="note">Note:</label>
-                            <textarea class="form-control" id="note" name="note" rows="3" readonly>@note</textarea>
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskDepth">Desk Depth:</label>
+                        <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@deskDepth" readonly>
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="dateAdded">Date Added:</label>
-                            <input type="text" class="form-control" id="dateAddded" name="dateAdded" value="@dateAdded" readonly>
-                        </span>
-                    </section>
-                </fieldset>
-            </form>
-        </section>
-    </article>
-</body>
-</html>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskNumOfDrawers">Number of Desk Drawers:</label>
+                        <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@verseText" readonly>
+                    </span>
+                </section>
+
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskMaterial">Desk Material:</label>
+                        <input type="text" class="form-control" id="deskMaterial" name="deskMaterial" value="@deskMaterial" readonly>
+                    </span>
+                </section>
+
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="rushDays">Rush Options:</label>
+                        <input type="text" class="form-control" id="rushDays" name="rushDays" value="@rushDays" readonly>
+                    </span>
+                </section>
+
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="quoteAmount">Quote Amount:</label>
+                        <input type="number" class="form-control" id="quoteAmount" name="quoteAmount" value="@quoteAmount" readonly>
+                    </span>
+                </section>
+
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="dateAdded">Date Added:</label>
+                        <input type="text" class="form-control" id="dateAddded" name="dateAdded" value="@dateAdded" readonly>
+                    </span>
+                </section>
+            </fieldset>
+        </form>
+    </section>
+</article>

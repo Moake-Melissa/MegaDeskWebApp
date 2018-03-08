@@ -32,7 +32,7 @@
                 deskNumOfDrawers = row.numOfDrawers;
                 deskMaterial = row.typeOfMaterial;
                 rushDays = row.rushOrder;
-                dateAdded = row.quoteDate;
+                dateAdded = row.quoteDate.ToString();
                 quoteAmount = row.quoteAmount;
             }
             else
@@ -75,7 +75,7 @@
         }
     }
 }
-<article class="row" id="add-quote-page">
+<article class="row" id="edit-quote-page">
     <section class="single-quote">
         <h3 class="headline">Edit Quote # @quoteId</h3>
         <hr>
