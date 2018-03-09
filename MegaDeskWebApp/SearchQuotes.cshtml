@@ -19,38 +19,30 @@
 }
 
 <h2>Search Quotes</h2>
-<div class="searchForm">
-    <label for="searchCustomer">Search by Customer:</label>
-    <input type="text" name="searchCustomer" id="searchCustomer" value="@Request.QueryString["searchCustomer"]">
-    <input type="Submit" class="submitButton" name="customerSearch" onclick="customerSearch();" value="Search">
-</div>
+<form method="get" id="search">
+    <div class="searchForm">
+        <label for="searchCustomer">Search by Customer:</label>
+        <input type="text" name="searchCustomer" id="searchCustomer" value="@Request.QueryString["searchCustomer"]">
+        <input type="Submit" class="submitButton" name="customerSearch" value="Search">
+    </div>
+</form>
 <div id="showSearch">
     @grid.GetHtml(
-            tableStyle: "grid",
-            headerStyle: "head",
-            alternatingRowStyle: "alt",
-            columns: grid.Columns(
-                grid.Column(format: @<a href="~/EditQuote?id=@item.ID">Edit</a>),
-                grid.Column(columnName: "customerName", header: "Customer Name", format: @<a href="~/ViewQuote?id=@item.ID">@item.customerName</a>, canSort: true),
-                grid.Column("quoteDate", "Quote Date", canSort: true),
-                grid.Column("quoteAmount", "Quote Amount", canSort: false),
-                grid.Column(format: @<a href="~/DeleteQuote?id=@item.ID">Delete</a>)
-                        )
-                    )
+                     tableStyle: "grid",
+                     headerStyle: "head",
+                     alternatingRowStyle: "alt",
+                     columns: grid.Columns(
+
+                        grid.Column(columnName: "customerName", header: "Customer Name", format: @<a href="~/ViewQuote?id=@item.ID">@item.customerName</a>, canSort: true),
+                        grid.Column("quoteDate", "Quote Date", canSort: true),
+                        grid.Column("quoteAmount", "Quote Amount", canSort: false),
+                        grid.Column(format: @<a href="~/EditQuote?id=@item.ID">Edit</a>),
+                        grid.Column(format: @<a href="~/DeleteQuote?id=@item.ID">Delete</a>)
+                                        )
+                     )
 
 </div>
 
 <p class=" menuLink button">
     <a href="~/Home.cshtml">Back to Menu</a>
 </p>
-
-<script>
-    function customerSearch() {
-        if (document.getElementById("searchCustomer").value != "") {
-            document.getElementById("showSearch").style.display = "block";
-        }
-        else {
-            document.getElementById("showSearch").style.display = "none";
-        }
-    }
-</script>

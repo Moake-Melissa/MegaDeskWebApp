@@ -1,5 +1,5 @@
 body {
-    background: url("/Images/woodBackground.jpeg") no-repeat fixed;
+    background: url("/Images/woodBackground.jpg") no-repeat fixed;
     background-size:cover;
     margin:0;
     color:saddlebrown;
@@ -185,7 +185,7 @@ footer p{
 }
 
 #showSearch{
-    display:none;
+    /*display:none;*/
 }
 
 .searchForm{
@@ -194,6 +194,7 @@ footer p{
 
 .form-group select {
     width: 173px;
+    padding: 2px;
 }
 
 section.form-group {
@@ -202,17 +203,23 @@ section.form-group {
 
 section.form-group input, .form-group select {
     position: absolute;
-    right: 55px; 
+    right: 55px;
+    padding-left: 6px;
+    border: 1px solid tan;
+    color: saddlebrown;
+    width: 160px;
 }
 
 section.form-group label{
-    padding-left:40px
+    padding-left:40px;
+    font-weight:bold;
 }
 
 form.quote-form input[type=submit]{
     float:right;
     margin-top:10px;
     margin-bottom:10px;
+    margin-left:15px;
 }
 
 fieldset{
@@ -230,12 +237,15 @@ form.quote-form {
 }
 
 .form-group select {
-    width: 173px;
+    width: 168px;
+    padding:2px;
 }
 
-#delete-quote-page .form-control, #view-quote-page .form-control {
+#delete-quote-page .form-control, #view-quote-page .form-control, #quoteAmount {
     background-color: transparent;
     border: none;
+    color: saddlebrown;
+    padding-left:0px;
 }
 
 article#view-quote-page fieldset {
