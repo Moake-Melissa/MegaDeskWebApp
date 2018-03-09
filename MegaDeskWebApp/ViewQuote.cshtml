@@ -9,7 +9,7 @@
     var deskMaterialId = 0;
     var deskMaterialName = "";
     var deskMaterialPrice = 0.0;
-    var rushDays = 0;
+    var rushDays = "";
     var dateAdded = DateTime.Now.ToString();
     var quoteAmount = 0.0;
     var quoteId = "";
@@ -31,7 +31,15 @@
                 deskNumOfDrawers = row.numOfDrawers;
                 deskMaterialId = row.materialId;
                 deskMaterialName = row.materialName;
-                rushDays = row.rushOrder;
+                if (row.rushOrder == 0)
+                {
+                    rushDays = "None";
+                }
+                else
+                {
+                    rushDays = row.rushOrder + " Days";
+                }
+
                 quoteAmount = row.quoteAmount;
                 dateAdded = row.quoteDate.ToString();
             }
@@ -64,14 +72,14 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskWidth">Desk Width:</label>
-                        <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@deskWidth" readonly>
+                        <input type="text" class="form-control" id="deskWidth" name="deskWidth" value="@deskWidth inches" readonly>
                     </span>
                 </section>
 
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskDepth">Desk Depth:</label>
-                        <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@deskDepth" readonly>
+                        <input type="text" class="form-control" id="deskDepth" name="deskDepth" value="@deskDepth inches" readonly>
                     </span>
                 </section>
 
@@ -99,7 +107,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="quoteAmount">Quote Amount:</label>
-                        <input type="number" class="form-control" id="quoteAmount" name="quoteAmount" value="@quoteAmount" readonly>
+                        <input type="text" class="form-control" id="quoteAmount" name="quoteAmount" value="$@quoteAmount" readonly>
                     </span>
                 </section>
 
