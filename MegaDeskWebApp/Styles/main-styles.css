@@ -43,6 +43,7 @@ header h1{
 main {
     height: 70vh;
     vertical-align: middle;
+    padding-top:30px;
 }
 
 section.options {
@@ -114,19 +115,20 @@ footer{
 
 .grid {
     border-collapse: collapse;
-    width: 74%;
+    width: 100%;
 }
 
     .grid th, .grid td {
-        border: 1px solid #C0C0C0;
+        border: 1px solid black;
         padding: 5px;
     }
 
     .grid th {
         color: saddlebrown;
+        background-color: tan;
     }
 
 .alt {
-    background-color: darkgray;
-    color: white;
+    background-color:tan;
+    color: black;
 }
