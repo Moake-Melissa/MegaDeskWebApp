@@ -1,4 +1,6 @@
-﻿@{
+﻿@using MegaDeskWebApp
+
+@{
     Layout = "~/_Layout.cshtml";
     Page.Title = "MegaDesk | Add Quote";
 
@@ -15,101 +17,130 @@
     var deskWidth = 0;
     var deskDepth = 0;
     var deskNumOfDrawers = 0;
-    var deskMaterial = "";
+    var deskMaterialId = 0;
+    var deskMaterialName = "";
+    var deskMaterialPrice = 0.0;
     var rushDays = 0;
     var dateAdded = DateTime.Now.ToString();
     var quoteAmount = 0.0m;
+    var selectedMaterial = new Material();
+
+    List<MegaDeskWebApp.Material> materialList = new List<MegaDeskWebApp.Material>();
+
+    var dbForList = Database.Open("MegaDeskWebApp");
+    foreach (var row in dbForList.Query("SELECT * FROM Material"))
+    {
+        materialList.Add(new MegaDeskWebApp.Material { MaterialId = row.Id, MaterialName = row.materialName, MaterialPrice = row.materialPrice });
+    }
+    dbForList.Close();
 
     if (IsPost && Validation.IsValid())
     {
         customerName = Request.Form["customerName"];
         deskWidth = Request.Form["deskWidth"].AsInt();
+        deskDepth = Request.Form["deskDepth"].AsInt();
         deskNumOfDrawers = Request.Form["deskNumOfDrawers"].AsInt();
-        deskMaterial = Request.Form["deskMaterial"];
+        deskMaterialId = Request.Form["deskMaterial"].AsInt();
         rushDays = Request.Form["rushDays"].AsInt();
 
-        // Calculate quote amount
-        MegaDeskWebApp_MelissaMoakeChrisBrown.DeskQuote newQuote = new MegaDeskWebApp_MelissaMoakeChrisBrown.DeskQuote(customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterial, rushDays);
+        // Find Desk Material Name and Price from the Id
+        foreach (Material material in materialList)
+        {
+            if (material.MaterialId == Request.Form["deskMaterial"].AsInt())
+            {
+                deskMaterialName = material.MaterialName;
+                deskMaterialPrice = material.MaterialPrice;
+                selectedMaterial = material;
+                break;
+            }
+            else
+            {
+                deskMaterialName = "";
+                deskMaterialPrice = 0.0;
+            }
+        }
 
+        // Calculate quote amount
+        MegaDeskWebApp.DeskQuote newQuote = new MegaDeskWebApp.DeskQuote(customerName, deskWidth, deskDepth, deskNumOfDrawers, selectedMaterial, rushDays);
         quoteAmount = newQuote.CalculateQuoteTotal();
 
         var db = Database.Open("MegaDeskWebApp");
-        var insertCommand = "INSERT INTO Orders (customerName, width, depth, numOfDrawers, typeOfMaterial, rushOrder, quoteDate, quoteAmount) Values(@0, @1, @2, @3, @4, @5, @6, @7)";
-        db.Execute(insertCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterial, rushDays, dateAdded, quoteAmount);
-        Response.Redirect("~/ViewQuote?ID=");
+        var insertCommand = "INSERT INTO Orders (customerName, width, depth, numOfDrawers, materialId, rushOrder, quoteDate, quoteAmount) Values(@0, @1, @2, @3, @4, @5, @6, @7); ";
+        db.Execute(insertCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterialId, rushDays, dateAdded, quoteAmount);
+        var quoteId = db.GetLastInsertId();
+        // quoteId = db.QueryValue("SELECT SCOPE_IDENTITY()");
+        Response.Redirect("~/ViewQuote?ID=" + @quoteId);
     }
 }
-    <article class="row" id="add-quote-page">
-        <section class="single-quote">
-            <h2 class="headline">Add a Quote</h2>
-            <hr>
-            @Html.ValidationSummary()
+<article class="row" id="add-quote-page">
+    <section class="single-quote">
+        <h2 class="headline">Add a Quote</h2>
+        @Html.ValidationSummary()
 
-            <form method="post" class="quote-form">
-                <fieldset>
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="customerName">Customer Name:</label>
-                            <input type="text" class="form-control" id="customerName" name="customerName" value="@Request.Form["customerName"]" placeholder="Customer Name">
-                            @Html.ValidationMessage("customerName")
-                        </span>
-                    </section>
+        <form method="post" class="quote-form">
+            <fieldset>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="customerName">Customer Name:</label>
+                        <input type="text" class="form-control" id="customerName" name="customerName" value="@Request.Form["customerName"]" placeholder="Customer Name">
+                        @Html.ValidationMessage("customerName")
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="deskWidth">Desk Width:</label>
-                            <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@Request.Form["deskWidth"]" placeholder="Width (24 - 96 inches)">
-                            @Html.ValidationMessage("deskWidth")
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskWidth">Desk Width:</label>
+                        <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@Request.Form["deskWidth"]" placeholder="Width (24 - 96 inches)">
+                        @Html.ValidationMessage("deskWidth")
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="deskDepth">Desk Depth:</label>
-                            <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@Request.Form["deskDepth"]" placeholder="Depth (12 - 48 inches)">
-                            @Html.ValidationMessage("deskDepth")
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskDepth">Desk Depth:</label>
+                        <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@Request.Form["deskDepth"]" placeholder="Depth (12 - 48 inches)">
+                        @Html.ValidationMessage("deskDepth")
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="deskNumOfDrawers">Number of Desk Drawers:</label>
-                            <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@Request.Form["verseText"]" placeholder="Drawers (1-7)">
-                            @Html.ValidationMessage("deskNumOfDrawers")
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskNumOfDrawers">Number of Desk Drawers:</label>
+                        <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@Request.Form["verseText"]" placeholder="Drawers (1-7)">
+                        @Html.ValidationMessage("deskNumOfDrawers")
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="deskMaterial">Desk Material:</label>
-                            <!-- Use value="@Request.Form["deskMaterial"]" to set which one is selected -->
-                            <select class="form-control" id="deskMaterial" name="deskMaterial">
-                                <option value="Pine">Pine</option>
-                                <option value="Laminate">Laminate</option>
-                                <option value="Veneer">Veneer</option>
-                                <option value="Oak">Oak</option>
-                                <option value="Rosewood">Rosewood</option>
-                            </select>
-                            @Html.ValidationMessage("deskMaterial")
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="deskMaterial">Desk Material:</label>
+                        <!-- Use value="@Request.Form["deskMaterial"]" to set which one is selected -->
+                        <select class="form-control" id="deskMaterial" name="deskMaterial">
+                            @foreach (MegaDeskWebApp.Material material in materialList)
+                            {
+                                <option value="@material.MaterialId">@material.MaterialName </option>
+                            }
+                        </select>
+                        @Html.ValidationMessage("deskMaterial")
+                    </span>
+                </section>
 
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="rushDays">Rush Options:</label>
-                            <!-- use "@Request.Form["rushDays"]" to set which one is selected -->
-                            <select class="form-control" id="rushDays" name="rushDays">
-                                <option selected value="0">None</option>
-                                <option value="3">3 Days</option>
-                                <option value="5">5 Days</option>
-                                <option value="7">7 Days</option>
-                            </select>
-                            @Html.ValidationMessage("rushDays")
-                        </span>
-                    </section>
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="rushDays">Rush Options:</label>
+                        <!-- use "@Request.Form["rushDays"]" to set which one is selected -->
+                        <select class="form-control" id="rushDays" name="rushDays">
+                            <option selected value="0">None</option>
+                            <option value="3">3 Days</option>
+                            <option value="5">5 Days</option>
+                            <option value="7">7 Days</option>
+                        </select>
+                        @Html.ValidationMessage("rushDays")
+                    </span>
+                </section>
 
-                    <p><input type="submit" name="buttonSubmit" value="Add Quote"></p>
-                </fieldset>
-            </form>
-        </section>
-    </article>
+                <p><input type="submit" name="buttonSubmit" value="Add Quote"></p>
+            </fieldset>
+        </form>
+    </section>
+</article>

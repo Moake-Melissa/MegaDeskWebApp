@@ -1,5 +1,6 @@
-﻿@{
-    /**/
+﻿@using MegaDeskWebApp
+
+@{
 
     Layout = "~/_Layout.cshtml";
     Page.Title = "MegaDesk | Edit Quote";
@@ -8,12 +9,23 @@
     var deskWidth = 0;
     var deskDepth = 0;
     var deskNumOfDrawers = 0;
-    var deskMaterial = "";
+    var deskMaterialId = 0;
+    var deskMaterialName = "";
+    var deskMaterialPrice = 0.0;
     var rushDays = 0;
     var dateAdded = DateTime.Now.ToString();
-    var quoteAmount = 0;
+    var quoteAmount = 0.0m;
     var quoteId = "";
+    var selectedMaterial = new Material();
 
+    List<Material> materialList = new List<Material>();
+
+    var dbForList = Database.Open("MegaDeskWebApp");
+    foreach (var row in dbForList.Query("SELECT * FROM Material"))
+    {
+        materialList.Add(new Material { MaterialId = row.Id, MaterialName = row.materialName, MaterialPrice = row.materialPrice });
+    }
+    dbForList.Close();
 
     if (!IsPost)
     {
@@ -21,7 +33,7 @@
         {
             quoteId = Request.QueryString["ID"];
             var db = Database.Open("MegaDeskWebApp");
-            var dbCommand = "SELECT * FROM Orders WHERE ID = @0";
+            var dbCommand = "SELECT customerName, width, depth, numOfDrawers, materialId, materialName, rushOrder, quoteDate, quoteAmount FROM Orders join Material on Material.id = Orders.materialId  WHERE Orders.ID = @0";
             var row = db.QuerySingle(dbCommand, quoteId);
 
             if (row != null)
@@ -30,10 +42,11 @@
                 deskWidth = row.width;
                 deskDepth = row.depth;
                 deskNumOfDrawers = row.numOfDrawers;
-                deskMaterial = row.typeOfMaterial;
+                deskMaterialId = row.materialId;
+                deskMaterialName = row.materialName;
                 rushDays = row.rushOrder;
                 dateAdded = row.quoteDate.ToString();
-                quoteAmount = row.quoteAmount;
+                quoteAmount = (decimal)row.quoteAmount;
             }
             else
             {
@@ -61,24 +74,44 @@
         deskWidth = Request.Form["deskWidth"].AsInt();
         deskDepth = Request.Form["deskDepth"].AsInt();
         deskNumOfDrawers = Request.Form["deskNumOfDrawers"].AsInt();
-        deskMaterial = Request.Form["deskMaterial"];
+        deskMaterialId = Request.Form["deskMaterial"].AsInt();
         rushDays = Request.Form["rushDays"].AsInt();
         quoteAmount = Request.Form["quoteAmount"].AsInt();
         quoteId = Request.Form["quoteId"];
 
         if (Validation.IsValid())
         {
+            // Find Desk Material Name and Price from the Id
+            foreach (Material material in materialList)
+            {
+                if (material.MaterialId == Request.Form["deskMaterial"].AsInt())
+                {
+                    deskMaterialName = material.MaterialName;
+                    deskMaterialPrice = material.MaterialPrice;
+                    selectedMaterial = material;
+                    break;
+                }
+                else
+                {
+                    deskMaterialName = "";
+                    deskMaterialPrice = 0.0;
+                }
+            }
+
+            // Calculate quote amount
+            MegaDeskWebApp.DeskQuote newQuote = new MegaDeskWebApp.DeskQuote(customerName, deskWidth, deskDepth, deskNumOfDrawers, selectedMaterial, rushDays);
+            quoteAmount = newQuote.CalculateQuoteTotal();
+
             var db = Database.Open("MegaDeskWebApp");
-            var updateCommand = "UPDATE Orders SET customerName=@0, deskWidth=@1, deskDepth=@2, deskNumOfDrawers=@3, typeOfMaterial=@4, rushOrder=@5, quoteAmount=@6 WHERE Id=@7";
-            db.Execute(updateCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterial, rushDays, quoteAmount, quoteId);
-            Response.Redirect("~/Home");
+            var updateCommand = "UPDATE Orders SET customerName=@0, width=@1, depth=@2, numOfDrawers=@3, materialId=@4, rushOrder=@5, quoteAmount=@6 WHERE Id=@7";
+            db.Execute(updateCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterialId, rushDays, quoteAmount, quoteId);
+            Response.Redirect("~/ViewQuote?ID=" + @quoteId);
         }
     }
 }
 <article class="row" id="edit-quote-page">
     <section class="single-quote">
         <h2 class="headline">Edit Quote # @quoteId</h2>
-        <hr>
         @Html.ValidationSummary()
 
         <form method="post" class="quote-form">
@@ -86,7 +119,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="customerName">Customer Name:</label>
-                        <input type="text" class="form-control" id="customerName" name="customerName" value="@Request.Form["customerName"]" placeholder="Customer Name">
+                        <input type="text" class="form-control" id="customerName" name="customerName" value="@customerName" placeholder="Customer Name">
                         @Html.ValidationMessage("customerName")
                     </span>
                 </section>
@@ -94,7 +127,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskWidth">Desk Width:</label>
-                        <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@Request.Form["deskWidth"]" placeholder="Width (24 - 96 inches)">
+                        <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@deskWidth" placeholder="Width (24 - 96 inches)">
                         @Html.ValidationMessage("deskWidth")
                     </span>
                 </section>
@@ -102,7 +135,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskDepth">Desk Depth:</label>
-                        <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@Request.Form["deskDepth"]" placeholder="Depth (12 - 48 inches)">
+                        <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@deskDepth" placeholder="Depth (12 - 48 inches)">
                         @Html.ValidationMessage("deskDepth")
                     </span>
                 </section>
@@ -110,7 +143,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskNumOfDrawers">Number of Desk Drawers:</label>
-                        <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@Request.Form["deskNumOfDrawers"]" placeholder="Drawers (1-7)">
+                        <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@deskNumOfDrawers" placeholder="Drawers (1-7)">
                         @Html.ValidationMessage("deskNumOfDrawers")
                     </span>
                 </section>
@@ -120,11 +153,17 @@
                         <label for="deskMaterial">Desk Material:</label>
                         <!-- Use value="@Request.Form["deskMaterial"]" to set which one is selected -->
                         <select class="form-control" id="deskMaterial" name="deskMaterial">
-                            <option value="Pine">Pine</option>
-                            <option value="Laminate">Laminate</option>
-                            <option value="Veneer">Veneer</option>
-                            <option value="Oak">Oak</option>
-                            <option value="Rosewood">Rosewood</option>
+                        @foreach (Material material in materialList)
+                         {
+                            if (material.MaterialId == deskMaterialId)
+                            {
+                                <option selected="selected" value="@material.MaterialId">@material.MaterialName </option>
+                            }
+                            else
+                            {
+                                <option value="@material.MaterialId">@material.MaterialName </option>
+                            }
+                         }
                         </select>
                         @Html.ValidationMessage("deskMaterial")
                     </span>
@@ -146,8 +185,8 @@
 
                 <section class="form-group">
                     <span class="has-float-label">
-                        <label for="totalAmount">Quote Amount:</label>
-                        <output name="quoteAmount"></output>
+                        <label for="quoteAmount">Quote Amount:</label>
+                        <input type="number" class="form-control" id="quoteAmount" name="quoteAmount" value="@quoteAmount" readonly>
                     </span>
                 </section>
 
