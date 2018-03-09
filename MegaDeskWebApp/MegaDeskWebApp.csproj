@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\MegaDeskWebApp.sdf" />
+    <Content Include="App_Data\rushOrderPrices.txt" />
     <Content Include="Home.cshtml" />
     <Content Include="AddQuote.cshtml" />
     <Content Include="EditQuote.cshtml" />
@@ -114,9 +115,9 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Desk.cs" />
-    <Compile Include="DeskQuote.cs" />
-    <Compile Include="Material.cs" />
+    <Content Include="App_Code\Desk.cs" />
+    <Content Include="App_Code\DeskQuote.cs" />
+    <Content Include="App_Code\Material.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

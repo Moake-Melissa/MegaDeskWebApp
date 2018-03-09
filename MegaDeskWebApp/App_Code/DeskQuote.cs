@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace MegaDeskWebApp
 {
@@ -131,7 +133,8 @@ namespace MegaDeskWebApp
 
             try
             {
-                string[] prices = File.ReadAllLines("rushOrderPrices.txt");
+                string fileInApp_DataFolder = Path.Combine(Path.GetDirectoryName(HttpRuntime.AppDomainAppPath), @"App_Data\rushOrderPrices.txt");
+                string[] prices = File.ReadAllLines(fileInApp_DataFolder);
 
                 foreach (var price in prices)
                 {
@@ -152,7 +155,7 @@ namespace MegaDeskWebApp
             }
             catch (Exception ex)
             {
-                //MessageBox.Show(ex.Message + "Error loading Rush Order Pricing"); // Tell user about the error
+                string errorMessage = ex.Message + "Error loading Rush Order Pricing"; // Tell user about the error
             }
             return rushPrices;
         }

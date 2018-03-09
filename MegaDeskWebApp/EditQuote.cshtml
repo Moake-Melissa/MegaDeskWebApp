@@ -102,10 +102,13 @@
             MegaDeskWebApp.DeskQuote newQuote = new MegaDeskWebApp.DeskQuote(customerName, deskWidth, deskDepth, deskNumOfDrawers, selectedMaterial, rushDays);
             quoteAmount = newQuote.CalculateQuoteTotal();
 
-            var db = Database.Open("MegaDeskWebApp");
-            var updateCommand = "UPDATE Orders SET customerName=@0, width=@1, depth=@2, numOfDrawers=@3, materialId=@4, rushOrder=@5, quoteAmount=@6 WHERE Id=@7";
-            db.Execute(updateCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterialId, rushDays, quoteAmount, quoteId);
-            Response.Redirect("~/ViewQuote?ID=" + @quoteId);
+            if (!Request.Form["buttonSubmit"].Contains("Calculate"))
+            {
+                var db = Database.Open("MegaDeskWebApp");
+                var updateCommand = "UPDATE Orders SET customerName=@0, width=@1, depth=@2, numOfDrawers=@3, materialId=@4, rushOrder=@5, quoteAmount=@6 WHERE Id=@7";
+                db.Execute(updateCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterialId, rushDays, quoteAmount, quoteId);
+                Response.Redirect("~/ViewQuote?ID=" + @quoteId);
+            }
         }
     }
 }
@@ -153,17 +156,17 @@
                         <label for="deskMaterial">Desk Material:</label>
                         <!-- Use value="@Request.Form["deskMaterial"]" to set which one is selected -->
                         <select class="form-control" id="deskMaterial" name="deskMaterial">
-                        @foreach (Material material in materialList)
-                         {
-                            if (material.MaterialId == deskMaterialId)
-                            {
-                                <option selected="selected" value="@material.MaterialId">@material.MaterialName </option>
-                            }
-                            else
-                            {
-                                <option value="@material.MaterialId">@material.MaterialName </option>
-                            }
-                         }
+                            @foreach (Material material in materialList)
+                {
+                    if (material.MaterialId == deskMaterialId)
+                    {
+                        <option selected="selected" value="@material.MaterialId">@material.MaterialName </option>
+        }
+        else
+        {
+            <option value="@material.MaterialId">@material.MaterialName </option>
+}
+}
                         </select>
                      
                     </span>
@@ -174,10 +177,39 @@
                         <label for="rushDays">Rush Options:</label>
                         <!-- use "@Request.Form["rushDays"]" to set which one is selected -->
                         <select class="form-control" id="rushDays" name="rushDays">
-                            <option selected value="0">None</option>
-                            <option value="3">3 Days</option>
-                            <option value="5">5 Days</option>
-                            <option value="7">7 Days</option>
+                            @if (rushDays == 0)
+                            {
+                                <option selected = "selected" value="0">None</option>
+                            }
+                            else
+                            {
+                                <option value="0">None</option>
+                            }
+                            @if (rushDays == 3)
+                            {
+                                <option selected = "selected" value="3">3 Days</option>
+                            }
+                            else
+                            {
+                                <option value="3">3 Days</option>
+                            }
+                            @if (rushDays == 5)
+                            {
+                                <option selected = "selected" value="5">5 Days</option>
+                            }
+                            else
+                            {
+                                <option value="5">5 Days</option>
+                            }
+
+                            @if (rushDays == 7)
+                            {
+                                <option selected = "selected" value="7">7 Days</option>
+                            }
+                            else
+                            {
+                                <option value="7">7 Days</option>
+                            }
                         </select>
                       
                     </span>
@@ -190,6 +222,7 @@
                     </span>
                 </section>
 
+                <p><input type="submit" name="buttonSubmit" value="Calculate Price"></p>
                 <input type="hidden" id="quoteId" name="quoteId" value="@quoteId">
                 <p><input type="submit" name="buttonSubmit" value="Update Quote"></p>
             </fieldset>

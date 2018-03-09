@@ -64,12 +64,16 @@
         MegaDeskWebApp.DeskQuote newQuote = new MegaDeskWebApp.DeskQuote(customerName, deskWidth, deskDepth, deskNumOfDrawers, selectedMaterial, rushDays);
         quoteAmount = newQuote.CalculateQuoteTotal();
 
-        var db = Database.Open("MegaDeskWebApp");
-        var insertCommand = "INSERT INTO Orders (customerName, width, depth, numOfDrawers, materialId, rushOrder, quoteDate, quoteAmount) Values(@0, @1, @2, @3, @4, @5, @6, @7); ";
-        db.Execute(insertCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterialId, rushDays, dateAdded, quoteAmount);
-        var quoteId = db.GetLastInsertId();
-        // quoteId = db.QueryValue("SELECT SCOPE_IDENTITY()");
-        Response.Redirect("~/ViewQuote?ID=" + @quoteId);
+        if (!Request.Form["buttonSubmit"].Contains("Calculate"))
+        {
+            // Submit - Add quote to database and redirect to view page
+            var db = Database.Open("MegaDeskWebApp");
+            var insertCommand = "INSERT INTO Orders (customerName, width, depth, numOfDrawers, materialId, rushOrder, quoteDate, quoteAmount) Values(@0, @1, @2, @3, @4, @5, @6, @7); ";
+            db.Execute(insertCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterialId, rushDays, dateAdded, quoteAmount);
+            var quoteId = db.GetLastInsertId();
+            // quoteId = db.QueryValue("SELECT SCOPE_IDENTITY()");
+            Response.Redirect("~/ViewQuote?ID=" + @quoteId);
+        }
     }
 }
 <article class="row" id="add-quote-page">
@@ -105,8 +109,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskNumOfDrawers">Number of Desk Drawers:</label>
-                        <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@Request.Form["verseText"]" placeholder="Drawers (1-7)">
-                 
+                        <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@Request.Form["deskNumOfDrawers"]" placeholder="Drawers (1-7)">
                     </span>
                 </section>
 
@@ -115,10 +118,17 @@
                         <label for="deskMaterial">Desk Material:</label>
                         <!-- Use value="@Request.Form["deskMaterial"]" to set which one is selected -->
                         <select class="form-control" id="deskMaterial" name="deskMaterial">
-                            @foreach (MegaDeskWebApp.Material material in materialList)
+                        @foreach (Material material in materialList)
+                         {
+                            if (material.MaterialId == deskMaterialId)
+                            {
+                               <option selected="selected" value="@material.MaterialId">@material.MaterialName </option>
+                            }
+                            else
                             {
                                 <option value="@material.MaterialId">@material.MaterialName </option>
                             }
+                         }
                         </select>
                       
                     </span>
@@ -129,15 +139,53 @@
                         <label for="rushDays">Rush Options:</label>
                         <!-- use "@Request.Form["rushDays"]" to set which one is selected -->
                         <select class="form-control" id="rushDays" name="rushDays">
-                            <option selected value="0">None</option>
-                            <option value="3">3 Days</option>
-                            <option value="5">5 Days</option>
-                            <option value="7">7 Days</option>
+                            @if (Request.Form["rushDays"] == "0")
+                            {
+                                <option selected = "selected" value="0">None</option>
+                            }
+                            else
+                            {
+                                <option value="0">None</option>
+                            }
+                            @if (Request.Form["rushDays"] == "3")
+                            {
+                                <option selected = "selected" value="3">3 Days</option>
+                            }
+                            else
+                            {
+                                <option value="3">3 Days</option>
+                            }
+                            @if (Request.Form["rushDays"] == "5")
+                            {
+                                <option selected = "selected" value="5">5 Days</option>
+                            }
+                            else
+                            {
+                                <option value="5">5 Days</option>
+                            }
+
+                            @if (Request.Form["rushDays"] == "7")
+                            {
+                                <option selected = "selected" value="7">7 Days</option>
+                            }
+                            else
+                            {
+                                <option value="7">7 Days</option>
+                            }
                         </select>
                     
                     </span>
                 </section>
 
+                <section class="form-group">
+                    <span class="has-float-label">
+                        <label for="quoteAmount">Quote Amount:</label>
+                        <input type="number" class="form-control" id="quoteAmount" name="quoteAmount" value="@quoteAmount" readonly>
+                    </span>
+                </section>
+
+
+                <p><input type="submit" name="buttonSubmit" value="Calculate Price"></p>
                 <p><input type="submit" name="buttonSubmit" value="Add Quote"></p>
             </fieldset>
         </form>
