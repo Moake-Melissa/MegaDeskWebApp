@@ -10,24 +10,24 @@
 }
 
 <h2>View all Quotes</h2>
-
+<p class="addQuote button">
+    <a href="~/AddQuote.cshtml">Add a Quote</a>
+</p>
 @grid.GetHtml(
     tableStyle: "grid",
     headerStyle: "head",
     alternatingRowStyle: "alt",
     columns: grid.Columns(
+        grid.Column(format: @<a href="~/ViewQuote?id=@item.ID">View</a>),
+        grid.Column("customerName", "Customer Name"),
+        grid.Column("quoteDate", "Quote Date", canSort: true),
+        grid.Column("quoteAmount", "Quote Amount", canSort: false),
         grid.Column(format: @<a href="~/EditQuote?id=@item.ID">Edit</a>),
-                grid.Column("customerName", "Customer Name", canSort: true),
-                grid.Column("quoteDate", "Quote Date", canSort: true),
-                grid.Column("quoteAmount", "Quote Amount", canSort: false),
-                grid.Column(format: @<a href="~/DeleteEntry?id=@item.ID">Delete</a>)
+        grid.Column(format: @<a href="~/DeleteQuote?id=@item.ID">Delete</a>)
         )
     )
 
 
-<p>
-    <button onclick="window.location.href='~/AddQuote.cshtml'">Add a Quote</button>
-</p>
-<p>
+<p class=" menuLink button">
     <a href="~/Home.cshtml">Back to Menu</a>
 </p>

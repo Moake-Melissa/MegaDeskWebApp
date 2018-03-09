@@ -120,7 +120,7 @@
                     <span class="has-float-label">
                         <label for="customerName">Customer Name:</label>
                         <input type="text" class="form-control" id="customerName" name="customerName" value="@customerName" placeholder="Customer Name">
-                        @Html.ValidationMessage("customerName")
+                      
                     </span>
                 </section>
 
@@ -128,7 +128,7 @@
                     <span class="has-float-label">
                         <label for="deskWidth">Desk Width:</label>
                         <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@deskWidth" placeholder="Width (24 - 96 inches)">
-                        @Html.ValidationMessage("deskWidth")
+                       
                     </span>
                 </section>
 
@@ -136,7 +136,7 @@
                     <span class="has-float-label">
                         <label for="deskDepth">Desk Depth:</label>
                         <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@deskDepth" placeholder="Depth (12 - 48 inches)">
-                        @Html.ValidationMessage("deskDepth")
+                       
                     </span>
                 </section>
 
@@ -144,7 +144,7 @@
                     <span class="has-float-label">
                         <label for="deskNumOfDrawers">Number of Desk Drawers:</label>
                         <input type="number" class="form-control" id="deskNumOfDrawers" name="deskNumOfDrawers" value="@deskNumOfDrawers" placeholder="Drawers (1-7)">
-                        @Html.ValidationMessage("deskNumOfDrawers")
+                      
                     </span>
                 </section>
 
@@ -165,7 +165,7 @@
                             }
                          }
                         </select>
-                        @Html.ValidationMessage("deskMaterial")
+                     
                     </span>
                 </section>
 
@@ -179,7 +179,7 @@
                             <option value="5">5 Days</option>
                             <option value="7">7 Days</option>
                         </select>
-                        @Html.ValidationMessage("rushDays")
+                      
                     </span>
                 </section>
 
@@ -196,3 +196,6 @@
         </form>
     </section>
 </article>
+<p class=" menuLink button">
+    <a href="~/Home.cshtml">Back to Menu</a>
+</p>

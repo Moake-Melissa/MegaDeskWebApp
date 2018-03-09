@@ -100,6 +100,7 @@
     <Content Include="Images\woodBackground.jpeg" />
     <Content Include="ViewAllQuotes.cshtml" />
     <Content Include="ViewQuote.cshtml" />
+    <Content Include="SearchQuotes.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

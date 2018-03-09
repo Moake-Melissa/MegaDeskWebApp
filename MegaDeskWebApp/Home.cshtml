@@ -2,21 +2,22 @@
     Page.Title = "MegaDesk";
     Layout = "~/_Layout.cshtml";
 }
+<article id="home">
+    <section class="options">
+        <div class="inner">
+            <div class="button">
+                <a href="~/ViewAllQuotes.cshtml">View All Quotes</a>
+            </div>
+            <div class="button">
+                <a href="~/AddQuote.cshtml">Add a Quote</a>
+            </div>
+            <div class="button">
+                <a href="~/SearchQuotes.cshtml">Search Quotes</a>
+            </div>
+        </div>
+    </section>
 
-<section class="options">
-    <div class="inner">
-        <div>
-            <a href="~/ViewAllQuotes.cshtml">View All Quotes</a>
-        </div>
-        <div>
-            <a href="~/AddQuote.cshtml">Add a Quote</a>
-        </div>
-        <div>
-            <a href="~/SearchQuotes.cshtml">Search Quotes</a>
-        </div>
-    </div>
-</section>
-
-<section class="image">
-    <img src="~/Images/desk.png" alt="desk image" />
-</section>
+    <section class="image">
+        <img src="~/Images/desk.png" alt="desk image" />
+    </section>
+</article>
