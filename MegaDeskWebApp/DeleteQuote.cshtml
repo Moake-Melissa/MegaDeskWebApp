@@ -6,10 +6,12 @@
     var deskWidth = 0;
     var deskDepth = 0;
     var deskNumOfDrawers = 0;
-    var deskMaterial = "";
+    var deskMaterialId = 0;
+    var deskMaterialName = "";
+    var deskMaterialPrice = 0.0;
     var rushDays = 0;
     var dateAdded = DateTime.Now.ToString();
-    var quoteAmount = 0;
+    var quoteAmount = 0.0;
     var quoteId = "";
 
     if (!IsPost)
@@ -18,7 +20,7 @@
         {
             quoteId = Request.QueryString["ID"];
             var db = Database.Open("MegaDeskWebApp");
-            var dbCommand = "SELECT * FROM Orders WHERE ID = @0";
+            var dbCommand = "SELECT customerName, width, depth, numOfDrawers, materialId, materialName, rushOrder, quoteDate, quoteAmount FROM Orders join Material on Material.id = Orders.materialId  WHERE Orders.ID = @0";
             var row = db.QuerySingle(dbCommand, quoteId);
 
             if (row != null)
@@ -27,7 +29,8 @@
                 deskWidth = row.width;
                 deskDepth = row.depth;
                 deskNumOfDrawers = row.numOfDrawers;
-                deskMaterial = row.typeOfMaterial;
+                deskMaterialId = row.materialId;
+                deskMaterialName = row.materialName;
                 rushDays = row.rushOrder;
                 quoteAmount = row.quoteAmount;
                 dateAdded = row.quoteDate.ToString();
@@ -54,7 +57,6 @@
 <article class="row" id="delete-journal">
     <section class="single-quote">
         <h2 class="headline">Delete Quote # @quoteId</h2>
-        <hr>
         @Html.ValidationSummary()
 
         <form method="get" class="quote-form">
@@ -90,7 +92,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskMaterial">Desk Material:</label>
-                        <input type="text" class="form-control" id="deskMaterial" name="deskMaterial" value="@deskMaterial" readonly>
+                        <input type="text" class="form-control" id="deskMaterial" name="deskMaterial" value="@deskMaterialName" readonly>
                     </span>
                 </section>
 

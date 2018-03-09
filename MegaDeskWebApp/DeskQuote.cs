@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MegaDeskWebApp_MelissaMoakeChrisBrown
+namespace MegaDeskWebApp
 {
     public class DeskQuote
     {
@@ -31,13 +31,13 @@ namespace MegaDeskWebApp_MelissaMoakeChrisBrown
 
         // public DeskQuote(string name, DateTime quoteDate, decimal width, decimal depth,
         public DeskQuote(string name, decimal width, decimal depth,
-            int drawers, MaterialType material, int rushDays)
+            int drawers, Material material, int rushDays)
         {
             CustomerName = name;
             // QuoteDate = quoteDate;
             Desk.Width = width;
             Desk.Depth = depth;
-            Desk.MaterialType = material;
+            Desk.Material = material;
             Desk.NumOfDrawers = drawers;
             RushDays = rushDays;
 
@@ -46,7 +46,7 @@ namespace MegaDeskWebApp_MelissaMoakeChrisBrown
 
         public decimal CalculateQuoteTotal()
         {
-            return BASE_PRICE + surfaceAreaCost() + DrawerCost() + (int)Desk.MaterialType + RushOrderCost();
+            return BASE_PRICE + surfaceAreaCost() + DrawerCost() + (decimal)Desk.Material.MaterialPrice + RushOrderCost();
         }
 
         private decimal surfaceAreaCost()
