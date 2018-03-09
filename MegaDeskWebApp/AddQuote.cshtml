@@ -18,7 +18,7 @@
     var deskMaterial = "";
     var rushDays = 0;
     var dateAdded = DateTime.Now.ToString();
-    var quoteAmount = 0;
+    var quoteAmount = 0.0m;
 
     if (IsPost && Validation.IsValid())
     {
@@ -28,15 +28,20 @@
         deskMaterial = Request.Form["deskMaterial"];
         rushDays = Request.Form["rushDays"].AsInt();
 
+        // Calculate quote amount
+        MegaDeskWebApp_MelissaMoakeChrisBrown.DeskQuote newQuote = new MegaDeskWebApp_MelissaMoakeChrisBrown.DeskQuote(customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterial, rushDays);
+
+        quoteAmount = newQuote.CalculateQuoteTotal();
+
         var db = Database.Open("MegaDeskWebApp");
         var insertCommand = "INSERT INTO Orders (customerName, width, depth, numOfDrawers, typeOfMaterial, rushOrder, quoteDate, quoteAmount) Values(@0, @1, @2, @3, @4, @5, @6, @7)";
         db.Execute(insertCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterial, rushDays, dateAdded, quoteAmount);
-        Response.Redirect("~/Home");
+        Response.Redirect("~/ViewQuote?ID=");
     }
 }
     <article class="row" id="add-quote-page">
         <section class="single-quote">
-            <h3 class="headline">Add a Quote</h3>
+            <h2 class="headline">Add a Quote</h2>
             <hr>
             @Html.ValidationSummary()
 
@@ -100,13 +105,6 @@
                                 <option value="7">7 Days</option>
                             </select>
                             @Html.ValidationMessage("rushDays")
-                        </span>
-                    </section>
-
-                    <section class="form-group">
-                        <span class="has-float-label">
-                            <label for="totalAmount">Quote Amount:</label>
-                            <output name="quoteAmount"></output>
                         </span>
                     </section>
 

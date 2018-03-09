@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MegaDesk2_MelissaMoakeChrisBrown
+namespace MegaDeskWebApp_MelissaMoakeChrisBrown
 {
-    class DeskQuote
+    public class DeskQuote
     {
         public String CustomerName { get; set; }
-        public DateTime QuoteDate { get; set; }
+        // public DateTime QuoteDate { get; set; }
         public int RushDays { get; set; }
         public Desk Desk = new Desk();
         public decimal QuotePrice { get; set; }
@@ -29,11 +29,12 @@ namespace MegaDesk2_MelissaMoakeChrisBrown
         private const int RUSH_LARGE_SIZE = 2000; // Use to help with rush prices
 
 
-        public DeskQuote(string name, DateTime quoteDate, decimal width, decimal depth,
+        // public DeskQuote(string name, DateTime quoteDate, decimal width, decimal depth,
+        public DeskQuote(string name, decimal width, decimal depth,
             int drawers, MaterialType material, int rushDays)
         {
             CustomerName = name;
-            QuoteDate = quoteDate;
+            // QuoteDate = quoteDate;
             Desk.Width = width;
             Desk.Depth = depth;
             Desk.MaterialType = material;
