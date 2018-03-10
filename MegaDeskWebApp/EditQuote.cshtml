@@ -162,7 +162,7 @@
                     <span class="has-float-label">
                         <label for="deskMaterial">Desk Material:</label>
                         <!-- Use value="@Request.Form["deskMaterial"]" to set which one is selected -->
-                        <select class="form-control" id="deskMaterial" name="deskMaterial">
+                        <select class="form-control" id="deskMaterial" onchange="selectWoodImage(this);" name="deskMaterial">
                             @foreach (Material material in materialList)
                             {
                                 if (material.MaterialId == deskMaterialId)
@@ -175,7 +175,7 @@
                                 }
                             }
                         </select>
-                     
+                        <span id="woodImage"></span>
                     </span>
                 </section>
 
@@ -242,3 +242,9 @@
 <p class="cancel button">
     <a href="~/ViewAllQuotes.cshtml">Cancel</a>
 </p>
+
+<script>
+    window.onload = function () {
+        selectWoodImage(document.getElementById('deskMaterial'));
+    }
+</script>

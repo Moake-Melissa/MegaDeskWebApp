@@ -270,3 +270,12 @@ article#view-quote-page fieldset {
 .cancel, .viewAll{
     float: right;
 }
+
+section.form-group #woodImage {
+    width: 23px;
+    display: block;
+    height: 23px;
+    position: absolute;
+    right: 24px;
+    margin-top: -18px;
+}
