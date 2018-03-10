@@ -6,8 +6,8 @@
     Page.Title = "MegaDesk | Edit Quote";
 
     var customerName = "";
-    var deskWidth = 0;
-    var deskDepth = 0;
+    var deskWidth = 0.0m;
+    var deskDepth = 0.0m;
     var deskNumOfDrawers = 0;
     var deskMaterialId = 0;
     var deskMaterialName = "";
@@ -39,8 +39,8 @@
             if (row != null)
             {
                 customerName = row.customerName;
-                deskWidth = row.width;
-                deskDepth = row.depth;
+                deskWidth = (decimal)row.width;
+                deskDepth = (decimal)row.depth;
                 deskNumOfDrawers = row.numOfDrawers;
                 deskMaterialId = row.materialId;
                 deskMaterialName = row.materialName;
@@ -61,54 +61,61 @@
 
     if (IsPost)
     {
-        Validation.RequireField("customerName", "Customer name is required");
-        Validation.RequireField("deskWidth", "Desk width is required");
-        Validation.RequireField("deskDepth", "Desk depth is required");
-        Validation.RequireField("deskNumOfDrawers", "Number of desk drawers is required");
-        Validation.RequireField("deskMaterial", "Desk material is required");
-        Validation.Add("deskWidth", Validator.Range(24, 96, "Width must be between 24 and 96 inches."));
-        Validation.Add("deskDepth", Validator.Range(12, 48, "Depth must be between 12 and 48 inches."));
-        Validation.Add("deskNumOfDrawers", Validator.Range(1, 7, "Number of drawers must be between 1 and 7."));
-
-        customerName = Request.Form["customerName"];
-        deskWidth = Request.Form["deskWidth"].AsInt();
-        deskDepth = Request.Form["deskDepth"].AsInt();
-        deskNumOfDrawers = Request.Form["deskNumOfDrawers"].AsInt();
-        deskMaterialId = Request.Form["deskMaterial"].AsInt();
-        rushDays = Request.Form["rushDays"].AsInt();
-        quoteAmount = Request.Form["quoteAmount"].AsInt();
-        quoteId = Request.Form["quoteId"];
-
-        if (Validation.IsValid())
+        if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
         {
-            // Find Desk Material Name and Price from the Id
-            foreach (Material material in materialList)
+            Validation.RequireField("customerName", "Customer name is required");
+            Validation.RequireField("deskWidth", "Desk width is required");
+            Validation.RequireField("deskDepth", "Desk depth is required");
+            Validation.RequireField("deskNumOfDrawers", "Number of desk drawers is required");
+            Validation.RequireField("deskMaterial", "Desk material is required");
+            Validation.Add("deskWidth", Validator.Range(24.0, 96.0, "Width must be between 24 and 96 inches."));
+            Validation.Add("deskDepth", Validator.Range(12.0, 48.0, "Depth must be between 12 and 48 inches."));
+            Validation.Add("deskNumOfDrawers", Validator.Range(1, 7, "Number of drawers must be between 1 and 7."));
+
+            customerName = Request.Form["customerName"];
+            deskWidth = Request.Form["deskWidth"].AsDecimal();
+            deskDepth = Request.Form["deskDepth"].AsDecimal();
+            deskNumOfDrawers = Request.Form["deskNumOfDrawers"].AsInt();
+            deskMaterialId = Request.Form["deskMaterial"].AsInt();
+            rushDays = Request.Form["rushDays"].AsInt();
+            quoteAmount = Math.Round(Request.Form["quoteAmount"].AsDecimal(), 2);
+            quoteId = Request.Form["quoteId"];
+
+            if (Validation.IsValid())
             {
-                if (material.MaterialId == Request.Form["deskMaterial"].AsInt())
+                // Find Desk Material Name and Price from the Id
+                foreach (Material material in materialList)
                 {
-                    deskMaterialName = material.MaterialName;
-                    deskMaterialPrice = material.MaterialPrice;
-                    selectedMaterial = material;
-                    break;
+                    if (material.MaterialId == Request.Form["deskMaterial"].AsInt())
+                    {
+                        deskMaterialName = material.MaterialName;
+                        deskMaterialPrice = material.MaterialPrice;
+                        selectedMaterial = material;
+                        break;
+                    }
+                    else
+                    {
+                        deskMaterialName = "";
+                        deskMaterialPrice = 0.0;
+                    }
                 }
-                else
+
+                // Calculate quote amount
+                MegaDeskWebApp.DeskQuote newQuote = new MegaDeskWebApp.DeskQuote(customerName, deskWidth, deskDepth, deskNumOfDrawers, selectedMaterial, rushDays);
+                quoteAmount = Math.Round(newQuote.CalculateQuoteTotal(), 2);
+
+                if (!Request.Form["buttonSubmit"].Contains("Calculate"))
                 {
-                    deskMaterialName = "";
-                    deskMaterialPrice = 0.0;
+                    var db = Database.Open("MegaDeskWebApp");
+                    var updateCommand = "UPDATE Orders SET customerName=@0, width=@1, depth=@2, numOfDrawers=@3, materialId=@4, rushOrder=@5, quoteAmount=@6 WHERE Id=@7";
+                    db.Execute(updateCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterialId, rushDays, quoteAmount, quoteId);
+                    Response.Redirect("~/ViewQuote?ID=" + @quoteId);
                 }
             }
-
-            // Calculate quote amount
-            MegaDeskWebApp.DeskQuote newQuote = new MegaDeskWebApp.DeskQuote(customerName, deskWidth, deskDepth, deskNumOfDrawers, selectedMaterial, rushDays);
-            quoteAmount = newQuote.CalculateQuoteTotal();
-
-            if (!Request.Form["buttonSubmit"].Contains("Calculate"))
-            {
-                var db = Database.Open("MegaDeskWebApp");
-                var updateCommand = "UPDATE Orders SET customerName=@0, width=@1, depth=@2, numOfDrawers=@3, materialId=@4, rushOrder=@5, quoteAmount=@6 WHERE Id=@7";
-                db.Execute(updateCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterialId, rushDays, quoteAmount, quoteId);
-                Response.Redirect("~/ViewQuote?ID=" + @quoteId);
-            }
+        }
+        else
+        {
+            Validation.AddFormError("No quote was selected.");
         }
     }
 }
@@ -130,7 +137,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskWidth">Desk Width:</label>
-                        <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@deskWidth" placeholder="Width (24 - 96 inches)">
+                        <input type="number" step="any" class="form-control" id="deskWidth" name="deskWidth" value="@deskWidth" placeholder="Width (24 - 96 inches)">
                        
                     </span>
                 </section>
@@ -138,7 +145,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskDepth">Desk Depth:</label>
-                        <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@deskDepth" placeholder="Depth (12 - 48 inches)">
+                        <input type="number" step="any" class="form-control" id="deskDepth" name="deskDepth" value="@deskDepth" placeholder="Depth (12 - 48 inches)">
                        
                     </span>
                 </section>
@@ -218,7 +225,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="quoteAmount">Quote Amount:</label>
-                        <input type="text" class="form-control" id="quoteAmount" name="quoteAmount" value="$@quoteAmount" readonly>
+                        <input type="text" class="form-control" id="quoteAmount" name="quoteAmount" value="$@String.Format("{0:0.00}", @quoteAmount)" readonly>
                     </span>
                 </section>
 
@@ -231,4 +238,7 @@
 </article>
 <p class=" menuLink button">
     <a href="~/Home.cshtml">Back to Menu</a>
+</p>
+<p class="cancel button">
+    <a href="~/ViewAllQuotes.cshtml">Cancel</a>
 </p>

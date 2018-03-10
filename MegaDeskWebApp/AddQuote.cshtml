@@ -9,13 +9,13 @@
     Validation.RequireField("deskDepth", "Desk depth is required");
     Validation.RequireField("deskNumOfDrawers", "Number of desk drawers is required");
     Validation.RequireField("deskMaterial", "Desk material is required");
-    Validation.Add("deskWidth", Validator.Range(24, 96, "Width must be between 24 and 96 inches."));
-    Validation.Add("deskDepth", Validator.Range(12, 48, "Depth must be between 12 and 48 inches."));
+    Validation.Add("deskWidth", Validator.Range(24.0, 96.0, "Width must be between 24 and 96 inches."));
+    Validation.Add("deskDepth", Validator.Range(12.0, 48.0, "Depth must be between 12 and 48 inches."));
     Validation.Add("deskNumOfDrawers", Validator.Range(1, 7, "Number of drawers must be between 1 and 7."));
 
     var customerName = "";
-    var deskWidth = 0;
-    var deskDepth = 0;
+    var deskWidth = 0.0m;
+    var deskDepth = 0.0m;
     var deskNumOfDrawers = 0;
     var deskMaterialId = 0;
     var deskMaterialName = "";
@@ -37,8 +37,8 @@
     if (IsPost && Validation.IsValid())
     {
         customerName = Request.Form["customerName"];
-        deskWidth = Request.Form["deskWidth"].AsInt();
-        deskDepth = Request.Form["deskDepth"].AsInt();
+        deskWidth = Request.Form["deskWidth"].AsDecimal();
+        deskDepth = Request.Form["deskDepth"].AsDecimal();
         deskNumOfDrawers = Request.Form["deskNumOfDrawers"].AsInt();
         deskMaterialId = Request.Form["deskMaterial"].AsInt();
         rushDays = Request.Form["rushDays"].AsInt();
@@ -62,7 +62,7 @@
 
         // Calculate quote amount
         MegaDeskWebApp.DeskQuote newQuote = new MegaDeskWebApp.DeskQuote(customerName, deskWidth, deskDepth, deskNumOfDrawers, selectedMaterial, rushDays);
-        quoteAmount = newQuote.CalculateQuoteTotal();
+        quoteAmount = Math.Round(newQuote.CalculateQuoteTotal(), 2);
 
         if (!Request.Form["buttonSubmit"].Contains("Calculate"))
         {
@@ -93,7 +93,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskWidth">Desk Width:</label>
-                        <input type="number" class="form-control" id="deskWidth" name="deskWidth" value="@Request.Form["deskWidth"]" placeholder="Width (24 - 96 inches)">
+                        <input type="number" step="any" class="form-control" id="deskWidth" name="deskWidth" value="@Request.Form["deskWidth"]" placeholder="Width (24 - 96 inches)">
                        
                     </span>
                 </section>
@@ -101,7 +101,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="deskDepth">Desk Depth:</label>
-                        <input type="number" class="form-control" id="deskDepth" name="deskDepth" value="@Request.Form["deskDepth"]" placeholder="Depth (12 - 48 inches)">
+                        <input type="number" step="any" class="form-control" id="deskDepth" name="deskDepth" value="@Request.Form["deskDepth"]" placeholder="Depth (12 - 48 inches)">
                        
                     </span>
                 </section>
@@ -180,7 +180,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="quoteAmount">Quote Amount:</label>
-                        <input type="text" class="form-control" id="quoteAmount" name="quoteAmount" value="$@quoteAmount" readonly>
+                        <input type="text" class="form-control" id="quoteAmount" name="quoteAmount" value="$@String.Format("{0:0.00}", @quoteAmount)" readonly>
                     </span>
                 </section>
 
@@ -193,4 +193,7 @@
 </article>
 <p class=" menuLink button">
     <a href="~/Home.cshtml">Back to Menu</a>
+</p>
+<p class="cancel button">
+    <a href="~/ViewAllQuotes.cshtml">Cancel</a>
 </p>

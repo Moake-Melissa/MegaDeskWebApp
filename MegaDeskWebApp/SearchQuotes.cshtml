@@ -35,7 +35,7 @@
 
                         grid.Column(columnName: "customerName", header: "Customer Name", format: @<a href="~/ViewQuote?id=@item.ID">@item.customerName</a>, canSort: true),
                         grid.Column("quoteDate", "Quote Date", canSort: true),
-                        grid.Column("quoteAmount", "Quote Amount", canSort: false),
+                        grid.Column("quoteAmount", "Quote Amount", canSort: false, format: (item) => @String.Format("{0:0.00}", @item.quoteAmount)),
                         grid.Column(format: @<a href="~/EditQuote?id=@item.ID">Edit</a>),
                         grid.Column(format: @<a href="~/DeleteQuote?id=@item.ID">Delete</a>)
                                         )

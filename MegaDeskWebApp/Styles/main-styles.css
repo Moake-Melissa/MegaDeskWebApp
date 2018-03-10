@@ -134,6 +134,7 @@ footer{
     margin-right:-25px;
     padding:10px 25px 2px;
     margin-top:30px;
+    clear:both;
 }
 
 footer p{
@@ -157,8 +158,11 @@ footer p{
 
 .grid th, .grid td {
     border: 1px solid saddlebrown;
-    padding: 5px;
+    padding: 5px 15px;
+}
 
+.grid td:nth-child(3), .grid td:nth-child(4), .grid td:nth-child(5){
+    text-align:center
 }
 
     .grid th {
@@ -261,4 +265,8 @@ article#view-quote-page fieldset {
     color: red;
     font-weight: bold;
     margin: 12px;
+}
+
+.cancel, .viewAll{
+    float: right;
 }

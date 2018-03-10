@@ -3,15 +3,15 @@
     Page.Title = "MegaDesk | View Quote";
 
     var customerName = "";
-    var deskWidth = 0;
-    var deskDepth = 0;
+    var deskWidth = 0.0m;
+    var deskDepth = 0.0m;
     var deskNumOfDrawers = 0;
     var deskMaterialId = 0;
     var deskMaterialName = "";
     var deskMaterialPrice = 0.0;
     var rushDays = "";
     var dateAdded = DateTime.Now.ToString();
-    var quoteAmount = 0.0;
+    var quoteAmount = 0.0m;
     var quoteId = "";
 
     if (!IsPost)
@@ -26,8 +26,8 @@
             if (row != null)
             {
                 customerName = row.customerName;
-                deskWidth = row.width;
-                deskDepth = row.depth;
+                deskWidth = (decimal)row.width;
+                deskDepth = (decimal)row.depth;
                 deskNumOfDrawers = row.numOfDrawers;
                 deskMaterialId = row.materialId;
                 deskMaterialName = row.materialName;
@@ -40,7 +40,7 @@
                     rushDays = row.rushOrder + " Days";
                 }
 
-                quoteAmount = row.quoteAmount;
+                quoteAmount = (decimal)row.quoteAmount;
                 dateAdded = row.quoteDate.ToString();
             }
             else
@@ -60,7 +60,7 @@
         <h2 class="headline">View Quote # @quoteId</h2>
         @Html.ValidationSummary()
 
-        <form method="get" class="quote-form">
+        <form method="post" class="quote-form">
             <fieldset>
                 <section class="form-group">
                     <span class="has-float-label">
@@ -107,7 +107,7 @@
                 <section class="form-group">
                     <span class="has-float-label">
                         <label for="quoteAmount">Quote Amount:</label>
-                        <input type="text" class="form-control" id="quoteAmount" name="quoteAmount" value="$@quoteAmount" readonly>
+                        <input type="text" class="form-control" id="quoteAmount" name="quoteAmount" value="$@String.Format("{0:0.00}", @quoteAmount)" readonly>
                     </span>
                 </section>
 
@@ -123,4 +123,8 @@
 </article>
 <p class=" menuLink button">
     <a href="~/Home.cshtml">Back to Menu</a>
+</p>
+
+<p class="viewAll button">
+    <a href="~/ViewAllQuotes.cshtml">View All Quotes</a>
 </p>
