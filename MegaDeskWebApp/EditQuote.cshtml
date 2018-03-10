@@ -109,7 +109,7 @@
                     var db = Database.Open("MegaDeskWebApp");
                     var updateCommand = "UPDATE Orders SET customerName=@0, width=@1, depth=@2, numOfDrawers=@3, materialId=@4, rushOrder=@5, quoteAmount=@6 WHERE Id=@7";
                     db.Execute(updateCommand, customerName, deskWidth, deskDepth, deskNumOfDrawers, deskMaterialId, rushDays, quoteAmount, quoteId);
-                    Response.Redirect("~/ViewQuote?ID=" + @quoteId);
+                    Response.Redirect("~/ViewAllQuotes");
                 }
             }
         }
@@ -121,7 +121,7 @@
 }
 <article class="row" id="edit-quote-page">
     <section class="single-quote">
-        <h2 class="headline">Edit Quote # @quoteId</h2>
+        <h2 class="headline">Edit Quote</h2>
         @Html.ValidationSummary()
 
         <form method="post" class="quote-form">
