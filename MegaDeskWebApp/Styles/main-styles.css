@@ -1,3 +1,143 @@
+@media screen and (max-width: 400px){
+    .grid td:nth-child(3), .grid th:nth-child(3){
+        display:none!important;
+    }
+
+    .menuLink{
+        right:-15px!important;
+    }
+
+    .menuLink a{
+        font-size:14px;
+        width:100px!important;
+    }
+
+}
+
+@media screen and (max-width:500px){
+    main > #home {
+        height: initial!important;
+        max-height: none!important;
+    }
+
+    section.options {
+        width: 100%!important;
+    }
+
+    section.options div.inner {
+        flex-direction: row!important;
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    section.options div div:first-child {
+        margin-top: 60px!important;
+    }
+
+    section.options div div a{
+        margin-right:5px;
+        margin-bottom:-40px;
+    }
+
+
+    section.image {
+        margin-top:80px;
+        display: block;
+        width: 100%!important;
+    }
+}
+
+@media screen and (max-width: 580px){
+    .addQuote, .searchQuotes{
+        position:relative!important;
+        display: inline-block;
+        left:0;
+        margin-top:0px;
+        margin-bottom: 10
+        px;
+        margin-right:5px;
+    }
+
+    .grid{
+        width:100%!important;
+    }
+    .grid th, .grid td {
+        padding: 5px 5px!important;
+    }  
+}
+
+
+@media screen and (max-width: 600px){
+    section.form-group input, .form-group select {
+        position: relative;
+        display:block;
+        left:25px;
+        margin-top:5px;
+    }
+
+    section.form-group label{
+        padding-left:10px!important;
+    }
+
+    #woodImage{
+        position:relative;
+        left:200px;
+        margin-top:5px!important;
+        display:block;
+    }
+
+    section.form-group{
+        padding-top:35px!important;
+    }
+
+    #view-quote-page fieldset{
+        padding-bottom:60px!important;
+    }
+
+    .menuLink{
+        font-size:14px;
+        width:130px;
+        margin-top:15px;
+    }
+}
+
+@media screen and (max-device-width:400px){
+    #container {
+        transform: translate(-50%, -45%) !important;
+        -ms-transform: translate(-50%, -45%) !important; /* IE 9 */
+        -webkit-transform: translate(-50%, -45%) !important; /* Chrome, Safari, Opera */
+    }
+}
+
+@media screen and (max-device-width:360px){
+    #container {
+        transform: translate(-50%, -39%) !important;
+        -ms-transform: translate(-50%, -39%) !important; /* IE 9 */
+        -webkit-transform: translate(-50%, -39%) !important; /* Chrome, Safari, Opera */
+    }
+}
+
+@media screen and (max-device-width:330px){
+    #container {
+        transform: translate(-50%, -35%) !important;
+        -ms-transform: translate(-50%, -35%) !important; /* IE 9 */
+        -webkit-transform: translate(-50%, -35%) !important; /* Chrome, Safari, Opera */
+    }
+
+    .menuLink{
+        right:-40px!important;
+    }
+
+    .menuLink a{
+        font-size:12px;
+        width:90px!important;
+        padding: 10px 5px!important;
+        right: -30px!important;
+    }
+}
+
+
+
 body {
     background: url("/Images/woodBackground.jpg") no-repeat fixed;
     background-size:cover;
@@ -22,7 +162,7 @@ a:hover {
 
 #container {
     width: 80%;
-    margin: 10px auto 30px;
+    margin: 30px auto 30px;
     padding: 10px 25px;
     background-color: rgba(255,255,255,0.8);
     border-radius: 5px;
@@ -179,6 +319,12 @@ footer p{
     position:absolute;
     top: 8px;
     right:0px;
+}
+
+.searchQuotes {
+    position:absolute;
+    top: 8px;
+    right:150px;
 }
 
 .menuLink{

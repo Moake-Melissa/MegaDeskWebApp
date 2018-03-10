@@ -104,6 +104,7 @@
     <Content Include="Images\rosewood.jpg" />
     <Content Include="Images\veneer.jpg" />
     <Content Include="Images\woodBackground.jpeg" />
+    <Content Include="Scripts\main-scripts.js" />
     <Content Include="ViewAllQuotes.cshtml" />
     <Content Include="ViewQuote.cshtml" />
     <Content Include="SearchQuotes.cshtml" />
