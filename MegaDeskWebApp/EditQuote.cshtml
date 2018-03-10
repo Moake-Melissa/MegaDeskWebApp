@@ -157,16 +157,16 @@
                         <!-- Use value="@Request.Form["deskMaterial"]" to set which one is selected -->
                         <select class="form-control" id="deskMaterial" name="deskMaterial">
                             @foreach (Material material in materialList)
-                {
-                    if (material.MaterialId == deskMaterialId)
-                    {
-                        <option selected="selected" value="@material.MaterialId">@material.MaterialName </option>
-        }
-        else
-        {
-            <option value="@material.MaterialId">@material.MaterialName </option>
-}
-}
+                            {
+                                if (material.MaterialId == deskMaterialId)
+                                {
+                                   <option selected="selected" value="@material.MaterialId" class="@material.MaterialName">@material.MaterialName</option>
+                                }
+                                else
+                                {
+                                   <option value="@material.MaterialId" class="@material.MaterialName">@material.MaterialName</option>
+                                }
+                            }
                         </select>
                      
                     </span>
